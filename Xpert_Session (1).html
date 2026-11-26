@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Mouse - Interactive Coding Session</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 85vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.6s ease-out;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #667eea #f1f1f1;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #1a202c;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.3), 0 0 20px rgba(102, 126, 234, 0.5);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            letter-spacing: 2px;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                text-shadow: 3px 3px 8px rgba(0,0,0,0.3), 0 0 20px rgba(102, 126, 234, 0.5);
+            }
+            to {
+                text-shadow: 3px 3px 8px rgba(0,0,0,0.3), 0 0 30px rgba(118, 75, 162, 0.8);
+            }
+        }
+
+        .slide h2 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: #1a202c;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide h3 {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #1a202c;
+            margin: 15px 0;
+            font-weight: 700;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            background: linear-gradient(45deg, #667eea, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: #1a202c;
+            line-height: 1.6;
+            margin: 10px 0;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: #68d391;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            text-align: left;
+            font-size: clamp(0.8rem, 2vw, 1.1rem);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.2);
+            border: 2px solid #667eea;
+            overflow-x: auto;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .code-block::before {
+            content: '💻 CODE';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 5px;
+            animation: rainbow 3s ease-in-out infinite;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        @keyframes rainbow {
+            0% { 
+                background: linear-gradient(120deg, #ff6b6b, #feca57);
+                transform: scale(1);
+            }
+            33% { 
+                background: linear-gradient(120deg, #4ecdc4, #44a08d);
+                transform: scale(1.05);
+            }
+            66% { 
+                background: linear-gradient(120deg, #667eea, #764ba2);
+                transform: scale(1.05);
+            }
+            100% { 
+                background: linear-gradient(120deg, #ff6b6b, #feca57);
+                transform: scale(1);
+            }
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .gesture-demo {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .gesture-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            min-width: 180px;
+            flex: 1;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gesture-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .gesture-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border: 3px solid #667eea;
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .gesture-card:hover::before {
+            left: 100%;
+        }
+
+        .gesture-card h3 {
+            color: #1a202c !important;
+            font-weight: 800 !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1) !important;
+            margin: 15px 0 !important;
+        }
+
+        .gesture-card p {
+            color: #2d3748 !important;
+            font-weight: 600 !important;
+            text-shadow: none !important;
+        }
+
+        .hand-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .interactive-element {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 20px;
+            border-radius: 25px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 900;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            border: 3px solid white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interactive-element:hover {
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+        }
+
+        .interactive-element::before {
+            content: '✨';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+            50% { opacity: 0.7; transform: translateY(-50%) scale(1.2); }
+        }
+
+        .fun-fact {
+            background: linear-gradient(45deg, #48cae4, #023e8a);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin: 15px 0;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            border: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .fun-fact::before {
+            content: '🤯';
+            position: absolute;
+            left: -10px;
+            top: -10px;
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .list-item {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            margin: 15px 0;
+            padding: 20px;
+            border-left: 8px solid #667eea;
+            border-radius: 0 20px 20px 0;
+            text-align: left;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .list-item::before {
+            content: '🎯';
+            position: absolute;
+            left: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #667eea;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .list-item:hover {
+            transform: translateX(10px);
+            border-left: 8px solid #ff6b6b;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(254, 202, 87, 0.1));
+        }
+
+        .list-item h3 {
+            color: #1a202c !important;
+            font-weight: 800 !important;
+            font-size: 1.3rem !important;
+            margin-bottom: 10px !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1) !important;
+        }
+
+        .list-item p {
+            color: #2d3748 !important;
+            font-weight: 600 !important;
+            font-size: 1.1rem !important;
+            line-height: 1.5 !important;
+            text-shadow: none !important;
+        }
+
+        .list-item strong {
+            color: #667eea;
+            font-weight: 900;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Animation Containers */
+        .animation-container {
+            width: 100%;
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #667eea;
+        }
+
+        .distance-demo {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .point {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .point-a {
+            background: #ff6b6b;
+            top: 100px;
+            left: 100px;
+            animation: movePointA 4s ease-in-out infinite;
+        }
+
+        .point-b {
+            background: #4ecdc4;
+            top: 200px;
+            right: 100px;
+            animation: movePointB 4s ease-in-out infinite;
+        }
+
+        @keyframes movePointA {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(50px, -30px); }
+        }
+
+        @keyframes movePointB {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-50px, 30px); }
+        }
+
+        .distance-line {
+            position: absolute;
+            height: 3px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transform-origin: left center;
+            z-index: 5;
+            animation: updateLine 4s ease-in-out infinite;
+        }
+
+        @keyframes updateLine {
+            0%, 100% {
+                width: 300px;
+                left: 120px;
+                top: 150px;
+                transform: rotate(18deg);
+            }
+            50% {
+                width: 200px;
+                left: 170px;
+                top: 140px;
+                transform: rotate(-5deg);
+            }
+        }
+
+        .distance-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #4a5568;
+            animation: updateDistance 4s ease-in-out infinite;
+        }
+
+        @keyframes updateDistance {
+            0%, 100% { opacity: 1; }
+            25% { opacity: 0.7; }
+            50% { opacity: 1; }
+            75% { opacity: 0.7; }
+        }
+
+        .angle-demo {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .angle-point {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .angle-point-a { background: #ff6b6b; top: 50px; left: 200px; }
+        .angle-point-b { background: #4ecdc4; top: 150px; left: 300px; }
+        .angle-point-c { background: #feca57; top: 100px; right: 150px; animation: rotatePoint 3s ease-in-out infinite; }
+
+        @keyframes rotatePoint {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-50px, -40px); }
+        }
+
+        .angle-line1, .angle-line2 {
+            position: absolute;
+            height: 2px;
+            background: #667eea;
+            transform-origin: left center;
+        }
+
+        .angle-arc {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #ff6b6b;
+            border-radius: 50%;
+            border-right: transparent;
+            border-bottom: transparent;
+            top: 130px;
+            left: 280px;
+            animation: updateAngle 3s ease-in-out infinite;
+        }
+
+        @keyframes updateAngle {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(45deg); }
+        }
+
+        .library-analogy {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .analogy-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            min-width: 250px;
+            flex: 1;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .analogy-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .analogy-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+
+        .analogy-card h3 {
+            color: white !important;
+            font-weight: 900 !important;
+            font-size: 1.5rem !important;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4) !important;
+            margin: 15px 0 !important;
+        }
+
+        .analogy-card p {
+            color: rgba(255,255,255,0.95) !important;
+            font-weight: 600 !important;
+            font-size: 1.1rem !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3) !important;
+            line-height: 1.4 !important;
+        }
+
+        .analogy-card strong {
+            color: #feca57 !important;
+            font-weight: 900 !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5) !important;
+            font-size: 1.2rem !important;
+        }
+
+        .analogy-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+        }
+
+        .click-animation {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: breathe 2s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .click-animation:active {
+            transform: scale(0.9);
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.6);
+        }
+
+        .math-visual {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #667eea;
+        }
+
+        .formula {
+            font-size: 1.5rem;
+            color: #4a5568;
+            margin: 10px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+                max-height: 90vh;
+            }
+            
+            .gesture-demo, .library-analogy {
+                flex-direction: column;
+            }
+            
+            .animation-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="slide-counter" id="slideCounter">1 / 18</div>
+    
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1 class="floating">🖱️ Virtual Mouse</h1>
+            <h2>Control Your Computer with Hand Gestures!</h2>
+            <p style="font-size: 1.5rem; margin-top: 30px;">Welcome to the Future of Human-Computer Interaction</p>
+            <div class="click-animation" onclick="createClickEffect(this)">
+                👋
+            </div>
+            <div class="fun-fact">
+                💡 Did you know? The average person clicks their mouse 50,000 times per year!
+            </div>
+            <div class="interactive-element" onclick="alert('Get ready for an amazing journey into Computer Vision! 🚀')">
+                🚀 Click here to start your adventure!
+            </div>
+        </div>
+
+        <!-- Slide 2: What We'll Build -->
+        <div class="slide">
+            <h2>🎯 What Are We Building Today?</h2>
+            <div class="gesture-demo">
+                <div class="gesture-card floating">
+                    <div class="hand-icon">✋</div>
+                    <h3>Move Cursor</h3>
+                    <p>Point and move!</p>
+                </div>
+                <div class="gesture-card floating" style="animation-delay: 0.5s;">
+                    <div class="hand-icon">👆</div>
+                    <h3>Left Click</h3>
+                    <p>Bend your finger!</p>
+                </div>
+                <div class="gesture-card floating" style="animation-delay: 1s;">
+                    <div class="hand-icon">🖕</div>
+                    <h3>Right Click</h3>
+                    <p>Different gesture!</p>
+                </div>
+                <div class="gesture-card floating" style="animation-delay: 1.5s;">
+                    <div class="hand-icon">📸</div>
+                    <h3>Screenshot</h3>
+                    <p>Pinch to capture!</p>
+                </div>
+            </div>
+            <p style="font-size: 1.4rem; margin-top: 30px;">A complete mouse replacement using just your webcam!</p>
+            <div class="fun-fact">
+                🎬 Remember Iron Man controlling holograms? That's what we're building today!
+            </div>
+        </div>
+
+        <!-- Slide 3: Library Analogies -->
+        <div class="slide">
+            <h2>🛠️ Our Superhero Team</h2>
+            <div class="library-analogy">
+                <div class="analogy-card">
+                    <span class="analogy-icon">👁️</span>
+                    <h3>OpenCV</h3>
+                    <p><strong>The Eyes</strong></p>
+                    <p>Like having super vision! OpenCV sees everything through your camera and processes images faster than you can blink.</p>
+                    <div class="fun-fact" style="background: rgba(255,255,255,0.2); margin-top: 15px;">
+                        🦸‍♂️ Think: Hawk-Eye's perfect vision
+                    </div>
+                </div>
+                <div class="analogy-card">
+                    <span class="analogy-icon">🧠</span>
+                    <h3>MediaPipe</h3>
+                    <p><strong>The Brain</strong></p>
+                    <p>Google's AI genius that instantly recognizes hands, faces, and poses. It's like having Professor X reading minds, but for body parts!</p>
+                    <div class="fun-fact" style="background: rgba(255,255,255,0.2); margin-top: 15px;">
+                        🦸‍♂️ Think: Professor X's telepathy
+                    </div>
+                </div>
+                <div class="analogy-card">
+                    <span class="analogy-icon">✋</span>
+                    <h3>PyAutoGUI</h3>
+                    <p><strong>The Hands</strong></p>
+                    <p>The action hero! It moves your mouse, clicks buttons, and takes screenshots. Like having telekinetic powers!</p>
+                    <div class="fun-fact" style="background: rgba(255,255,255,0.2); margin-top: 15px;">
+                        🦸‍♂️ Think: Jean Grey's telekinesis
+                    </div>
+                </div>
+            </div>
+            <div class="interactive-element" onclick="alert('Together, they form the Ultimate Computer Vision Squad! 💪')">
+                🦸‍♂️ Meet Your Coding Avengers!
+            </div>
+        </div>
+
+        <!-- Slide 4: Euclidean Distance -->
+        <div class="slide">
+            <h2>📏 Euclidean Distance: Measuring in Space</h2>
+            <div class="animation-container">
+                <div class="distance-demo">
+                    <div class="point point-a" title="Point A"></div>
+                    <div class="point point-b" title="Point B"></div>
+                    <div class="distance-line"></div>
+                    <div class="distance-text">Distance = √[(x₂-x₁)² + (y₂-y₁)²]</div>
+                </div>
+            </div>
+            
+            <div class="math-visual">
+                <h3>🤔 What is Euclidean Distance?</h3>
+                <p>It's the <strong>straight-line distance</strong> between two points - like drawing a line between your thumb and index finger!</p>
+                <div class="formula">
+                    Distance = √[(x₂-x₁)² + (y₂-y₁)²]
+                </div>
+                <div class="list-item">
+                    <p><strong>Real-world example:</strong> Distance between your house and school "as the crow flies"</p>
+                </div>
+                <div class="list-item">
+                    <p><strong>In our code:</strong> How far apart are your thumb and index finger?</p>
+                </div>
+            </div>
+
+            <div class="code-block">
+def get_distance(landmark_list):
+    (x1, y1), (x2, y2) = landmark_list[0], landmark_list[1]
+    L = np.hypot(x2 - x1, y2 - y1)  # This calculates Euclidean distance!
+    return np.interp(L, [0, 1], [0, 1000])
+            </div>
+        </div>
+
+        <!-- Slide 5: Angle Measurement -->
+        <div class="slide">
+            <h2>📐 Angle Measurement: The Math of Bending</h2>
+            <div class="animation-container">
+                <div class="angle-demo">
+                    <div class="angle-point angle-point-a" title="Point A"></div>
+                    <div class="angle-point angle-point-b" title="Point B (vertex)"></div>
+                    <div class="angle-point angle-point-c" title="Point C"></div>
+                    <div class="angle-arc"></div>
+                </div>
+            </div>
+
+            <div class="math-visual">
+                <h3>🤔 How Do We Measure Angles?</h3>
+                <p>We use <strong>three points</strong> to form an angle - just like measuring how bent your finger is!</p>
+                
+                <div class="gesture-demo">
+                    <div class="gesture-card">
+                        <h3 style="color: #ff6b6b;">Straight Finger</h3>
+                        <p>Angle ≈ 180° (almost flat)</p>
+                        <div style="font-size: 2rem;">👉</div>
+                    </div>
+                    <div class="gesture-card">
+                        <h3 style="color: #4ecdc4;">Bent Finger</h3>
+                        <p>Angle ≈ 45° (bent)</p>
+                        <div style="font-size: 2rem;">👆</div>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <p><strong>In our gestures:</strong> Bent finger = small angle (&lt; 50°)</p>
+                </div>
+                <div class="list-item">
+                    <p><strong>In our gestures:</strong> Straight finger = large angle (&gt; 90°)</p>
+                </div>
+            </div>
+
+            <div class="interactive-element" onclick="alert('Bend your finger right now and imagine the angle getting smaller! 📐')">
+                📐 Try bending your finger and see the angle change!
+            </div>
+        </div>
+
+        <!-- Slide 6: Hand Detection Setup -->
+        <div class="slide">
+            <h2>🖐️ Setting Up Our Hand Detective</h2>
+            <div class="code-block">
+mpHands = mp.solutions.hands
+hands = mpHands.Hands(
+    static_image_mode=False,    # Real-time video (not photos)
+    model_complexity=1,         # Balance: speed vs accuracy
+    min_detection_confidence=0.7, # 70% sure it's a hand
+    min_tracking_confidence=0.7,  # 70% sure we're still tracking
+    max_num_hands=1            # Track only one hand
+)
+            </div>
+
+            <div class="fun-fact">
+                🎯 MediaPipe finds <strong>21 landmarks</strong> on your hand - like GPS coordinates for each important point!
+            </div>
+
+            <div class="gesture-demo">
+                <div class="gesture-card">
+                    <h3>🎥 static_image_mode=False</h3>
+                    <p>We're watching a movie (video), not a photograph!</p>
+                </div>
+                <div class="gesture-card">
+                    <h3>⚡ model_complexity=1</h3>
+                    <p>Sweet spot between speed and accuracy</p>
+                </div>
+                <div class="gesture-card">
+                    <h3>🎯 confidence=0.7</h3>
+                    <p>Be 70% sure before acting - no false alarms!</p>
+                </div>
+            </div>
+
+            <div class="interactive-element" onclick="showHandLandmarks()">
+                🖐️ Click to see the 21 hand landmarks!
+            </div>
+        </div>
+
+        <!-- Slide 7: Finding Finger Tips -->
+        <div class="slide">
+            <h2>👆 GPS for Your Index Finger</h2>
+            <div class="code-block">
+def find_finger_tip(processed):
+    if processed.multi_hand_landmarks:
+        hand_landmarks = processed.multi_hand_landmarks[0]
+        index_finger_tip = hand_landmarks.landmark[mpHands.HandLandmark.INDEX_FINGER_TIP]
+        return index_finger_tip
+    return None
+            </div>
+
+            <div class="animation-container" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column;">
+                    <div style="font-size: 5rem; animation: pulse 2s infinite;">👆</div>
+                    <h3>Landmark #8</h3>
+                    <p>The tip of your pointing finger!</p>
+                </div>
+            </div>
+
+            <div class="list-item">
+                <h3>🔍 What's happening here?</h3>
+                <p>We're asking MediaPipe: "Hey, where exactly is the tip of the index finger?"</p>
+            </div>
+
+            <div class="list-item">
+                <h3>📍 Landmark #8</h3>
+                <p>Out of 21 points on your hand, #8 is the index fingertip - our cursor controller!</p>
+            </div>
+
+            <div class="fun-fact">
+                🎯 Think of it like having a tiny GPS tracker on your fingertip!
+            </div>
+        </div>
+
+        <!-- Slide 8: Coordinate Transformation -->
+        <div class="slide">
+            <h2>🗺️ From Hand Space to Screen Space</h2>
+            <div class="code-block">
+def move_mouse(index_finger_tip):
+    if index_finger_tip is not None:
+        x = int(index_finger_tip.x * screen_width)
+        y = int(index_finger_tip.y / 2 * screen_height)  # Note the /2 !
+        pyautogui.moveTo(x, y)
+            </div>
+
+            <div class="math-visual">
+                <h3>🔄 Coordinate Magic Explained</h3>
+                <div class="gesture-demo">
+                    <div class="gesture-card">
+                        <h3 style="color: #ff6b6b;">MediaPipe Says</h3>
+                        <p>x = 0.5, y = 0.3</p>
+                        <p>(Values between 0 and 1)</p>
+                    </div>
+                    <div class="gesture-card">
+                        <h3 style="color: #4ecdc4;">We Convert To</h3>
+                        <p>x = 960, y = 324</p>
+                        <p>(Actual pixel positions)</p>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <p><strong>The mysterious "/2":</strong> We only use the top half of your camera view!</p>
+                </div>
+                <div class="list-item">
+                    <p><strong>Why?</strong> So you don't have to stretch your arm to reach the bottom of the screen!</p>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                📐 It's like converting from "percentage of the room" to "exact steps from the corner"
+            </div>
+        </div>
+
+        <!-- Slide 9: Left Click Gesture -->
+        <div class="slide">
+            <h2>👆 Left Click: The Art of Finger Bending</h2>
+            <div class="code-block">
+def is_left_click(landmark_list, thumb_index_dist):
+    return (
+        util.get_angle(landmark_list[5], landmark_list[6], landmark_list[8]) < 50 and
+        util.get_angle(landmark_list[9], landmark_list[10], landmark_list[12]) > 90 and
+        thumb_index_dist > 50
+    )
+            </div>
+
+            <div class="gesture-demo">
+                <div class="gesture-card">
+                    <h3 style="color: #ff6b6b;">✅ Condition 1</h3>
+                    <p>Index finger bent</p>
+                    <p>Angle &lt; 50°</p>
+                    <div style="font-size: 2rem;">👇</div>
+                </div>
+                <div class="gesture-card">
+                    <h3 style="color: #4ecdc4;">✅ Condition 2</h3>
+                    <p>Middle finger straight</p>
+                    <p>Angle &gt; 90°</p>
+                    <div style="font-size: 2rem;">🖕</div>
+                </div>
+                <div class="gesture-card">
+                    <h3 style="color: #feca57;">✅ Condition 3</h3>
+                    <p>Thumb far from index</p>
+                    <p>Distance &gt; 50</p>
+                    <div style="font-size: 2rem;">👍</div>
+                </div>
+            </div>
+
+            <div class="interactive-element" onclick="alert('Try this gesture right now: Point your index finger down while keeping middle finger up! 👆👇')">
+                🖱️ Practice the Left Click gesture!
+            </div>
+
+            <div class="fun-fact">
+                🎯 It's like making a "number 1" but pointing downward while giving a peace sign!
+            </div>
+        </div>
+
+        <!-- Slide 10: Right Click & Other Gestures -->
+        <div class="slide">
+            <h2>🖱️ More Gestures in Our Arsenal</h2>
+            
+            <h3>Right Click: Middle Finger Magic</h3>
+            <div class="code-block">
+def is_right_click(landmark_list, thumb_index_dist):
+    return (
+        util.get_angle(landmark_list[9], landmark_list[10], landmark_list[12]) < 50 and
+        util.get_angle(landmark_list[5], landmark_list[6], landmark_list[8]) > 90 and
+        thumb_index_dist > 50
+    )
+            </div>
+
+            <h3>Screenshot: The Pinch</h3>
+            <div class="code-block">
+def is_screenshot(landmark_list, thumb_index_dist):
+    return (
+        util.get_angle(landmark_list[5], landmark_list[6], landmark_list[8]) < 50 and
+        util.get_angle(landmark_list[9], landmark_list[10], landmark_list[12]) < 50 and
+        thumb_index_dist < 50  # The key difference - pinch!
+    )
+            </div>
+
+            <div class="gesture-demo">
+                <div class="gesture-card">
+                    <h3>🖱️ Right Click</h3>
+                    <p>Opposite of left click!</p>
+                    <div style="font-size: 2rem;">🖕👆</div>
+                </div>
+                <div class="gesture-card">
+                    <h3>📸 Screenshot</h3>
+                    <p>Both fingers down + pinch</p>
+                    <div style="font-size: 2rem;">🤏</div>
+                </div>
+                <div class="gesture-card">
+                    <h3>🖱️ Double Click</h3>
+                    <p>Both fingers down, thumb away</p>
+                    <div style="font-size: 2rem;">✌️</div>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                💡 The secret sauce: Small changes in distance and angles create completely different actions!
+            </div>
+        </div>
+
+        <!-- Slide 11: The Main Loop -->
+        <div class="slide">
+            <h2>🔄 The Heart of Our Program</h2>
+            <div class="code-block">
+def main():
+    cap = cv2.VideoCapture(0)  # Turn on camera
+    
+    while cap.isOpened():
+        ret, frame = cap.read()           # Get one frame
+        frame = cv2.flip(frame, 1)        # Mirror it (feel natural)
+        frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert colors
+        processed = hands.process(frameRGB)  # 🧠 AI magic happens!
+        
+        # Extract hand landmarks and detect gestures
+        detect_gesture(frame, landmark_list, processed)
+        
+        cv2.imshow('Frame', frame)        # Show the video
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # Press 'q' to quit
+            break
+            </div>
+
+            <div class="animation-container">
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column;">
+                    <div class="click-animation" onclick="createRippleEffect(this)">
+                        🔄
+                    </div>
+                    <h3>This runs 30+ times per second!</h3>
+                    <p>Real-time gesture recognition in action</p>
+                </div>
+            </div>
+
+            <div class="list-item">
+                <h3>🎬 cv2.flip(frame, 1)</h3>
+                <p>Mirrors the image so it feels like looking in a mirror - move right, cursor goes right!</p>
+            </div>
+
+            <div class="list-item">
+                <h3>🎨 Color Conversion</h3>
+                <p>Cameras give BGR (Blue-Green-Red), MediaPipe wants RGB (Red-Green-Blue)</p>
+            </div>
+
+            <div class="list-item">
+                <h3>🧠 hands.process()</h3>
+                <p>This single line does all the AI heavy lifting - finding and tracking hands!</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Putting It All Together -->
+        <div class="slide">
+            <h2>🎯 The Grand Gesture Detection</h2>
+            <div class="code-block">
+def detect_gesture(frame, landmark_list, processed):
+    if len(landmark_list) >= 21:  # Do we have a complete hand?
+        
+        index_finger_tip = find_finger_tip(processed)
+        thumb_index_dist = util.get_distance([landmark_list[4], landmark_list[5]])
+        
+        # Priority order matters!
+        if is_cursor_mode(landmark_list, thumb_index_dist):
+            move_mouse(index_finger_tip)  # Just move, don't click
+            
+        elif is_left_click(landmark_list, thumb_index_dist):
+            mouse.click(Button.left)  # Click!
+            show_feedback(frame, "Left Click", (0, 255, 0))
+            
+        elif is_right_click(landmark_list, thumb_index_dist):
+            mouse.click(Button.right)  # Right click!
+            show_feedback(frame, "Right Click", (0, 0, 255))
+            
+        # ... more gestures
+            </div>
+
+            <div class="math-visual">
+                <h3>🎯 The Decision Tree</h3>
+                <div class="gesture-demo">
+                    <div class="gesture-card">
+                        <h3>1️⃣ Check Hand</h3>
+                        <p>Do we have 21 landmarks?</p>
+                    </div>
+                    <div class="gesture-card">
+                        <h3>2️⃣ Calculate</h3>
+                        <p>Distances and angles</p>
+                    </div>
+                    <div class="gesture-card">
+                        <h3>3️⃣ Decide</h3>
+                        <p>Which gesture matches?</p>
+                    </div>
+                    <div class="gesture-card">
+                        <h3>4️⃣ Act</h3>
+                        <p>Move cursor or click!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                ⚡ This entire process happens 30+ times per second - faster than you can blink!
+            </div>
+        </div>
+
+        <!-- Slide 13: Fun Activities -->
+        <div class="slide">
+            <h2>🎮 Time for Fun Activities!</h2>
+            <div class="gesture-demo">
+                <div class="gesture-card floating">
+                    <div class="hand-icon">🎯</div>
+                    <h3>Gesture Challenge</h3>
+                    <p>Master all 4 gestures in 60 seconds!</p>
+                    <div class="interactive-element" style="margin-top: 10px; padding: 10px;" onclick="startGestureChallenge()">
+                        Start Challenge
+                    </div>
+                </div>
+                <div class="gesture-card floating" style="animation-delay: 0.5s;">
+                    <div class="hand-icon">🎨</div>
+                    <h3>Custom Gestures</h3>
+                    <p>Design your own gesture for scrolling!</p>
+                    <div class="interactive-element" style="margin-top: 10px; padding: 10px;" onclick="alert('Think: What hand position would feel natural for scrolling? 🤔')">
+                        Design Now
+                    </div>
+                </div>
+                <div class="gesture-card floating" style="animation-delay: 1s;">
+                    <div class="hand-icon">🏆</div>
+                    <h3>Mouse Olympics</h3>
+                    <p>Navigate obstacle courses!</p>
+                    <div class="interactive-element" style="margin-top: 10px; padding: 10px;" onclick="alert('Ready to become a gesture master? Let\\'s race! 🏁')">
+                        Join Race
+                    </div>
+                </div>
+                <div class="gesture-card floating" style="animation-delay: 1.5s;">
+                    <div class="hand-icon">🧮</div>
+                    <h3>Math Detective</h3>
+                    <p>Predict angles and distances!</p>
+                    <div class="interactive-element" style="margin-top: 10px; padding: 10px;" onclick="startMathChallenge()">
+                        Solve Puzzles
+                    </div>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                🏅 Winner gets to add their own gesture to the code!
+            </div>
+        </div>
+
+        <!-- Slide 14: Debugging Like a Pro -->
+        <div class="slide">
+            <h2>🐛 Debugging: When Things Go Wrong</h2>
+            
+            <div class="list-item">
+                <h3>😵 "My hand isn't detected!"</h3>
+                <p><strong>Solution:</strong> Check lighting, camera position, and confidence thresholds</p>
+                <div class="code-block">
+# Try lowering the confidence
+min_detection_confidence=0.5  # Instead of 0.7
+                </div>
+            </div>
+
+            <div class="list-item">
+                <h3>🤪 "Gestures are triggering randomly!"</h3>
+                <p><strong>Solution:</strong> Adjust angle and distance thresholds</p>
+                <div class="code-block">
+# Make conditions stricter
+angle < 40  # Instead of < 50
+distance > 60  # Instead of > 50
+                </div>
+            </div>
+
+            <div class="list-item">
+                <h3>🐌 "Everything is too slow!"</h3>
+                <p><strong>Solution:</strong> Reduce model complexity or frame rate</p>
+                <div class="code-block">
+model_complexity=0  # Fastest setting
+# Or process every 2nd frame instead of every frame
+                </div>
+            </div>
+
+            <div class="interactive-element" onclick="alert('Remember: Every bug is just a feature waiting to be understood! 🐛➡️✨')">
+                🕵️ Become a Debug Detective!
+            </div>
+        </div>
+
+        <!-- Slide 15: Cool Extensions -->
+        <div class="slide">
+            <h2>🚀 Level Up: Cool Extensions</h2>
+            
+            <div class="gesture-demo">
+                <div class="gesture-card">
+                    <div class="hand-icon">🎵</div>
+                    <h3>Volume Control</h3>
+                    <p>Open palm = volume up</p>
+                    <p>Closed fist = volume down</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">🖼️</div>
+                    <h3>Air Drawing</h3>
+                    <p>Draw in the air and see it on screen!</p>
+                    <p>Perfect for digital art</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">🎮</div>
+                    <h3>Game Control</h3>
+                    <p>Control games with gestures</p>
+                    <p>No keyboard needed!</p>
+                </div>
+            </div>
+
+            <div class="gesture-demo">
+                <div class="gesture-card">
+                    <div class="hand-icon">🗣️</div>
+                    <h3>Voice + Gesture</h3>
+                    <p>Say "click" + point = super precision</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">👥</div>
+                    <h3>Two-Hand Mode</h3>
+                    <p>Left hand controls, right hand clicks</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">🌍</div>
+                    <h3>3D Control</h3>
+                    <p>Use hand depth for 3D navigation</p>
+                </div>
+            </div>
+
+            <div class="code-block">
+# Example: Volume control gesture
+def is_volume_up(landmark_list):
+    # Check if all fingers are extended (open palm)
+    return all_fingers_extended(landmark_list)
+
+def is_volume_down(landmark_list):
+    # Check if all fingers are closed (fist)
+    return all_fingers_closed(landmark_list)
+            </div>
+
+            <div class="fun-fact">
+                💡 The future is limitless - what gesture will you invent?
+            </div>
+        </div>
+
+        <!-- Slide 16: The Science Behind It -->
+        <div class="slide">
+            <h2>🔬 The Science: What's Really Happening?</h2>
+            
+            <div class="math-visual">
+                <h3>🧠 Machine Learning Magic</h3>
+                <div class="list-item">
+                    <p><strong>Convolutional Neural Networks:</strong> MediaPipe uses deep learning models trained on millions of hand images</p>
+                </div>
+                <div class="list-item">
+                    <p><strong>Real-time Processing:</strong> Optimized algorithms running at 30+ FPS</p>
+                </div>
+                <div class="list-item">
+                    <p><strong>3D Hand Modeling:</strong> Converts 2D images to 3D hand understanding</p>
+                </div>
+            </div>
+
+            <div class="animation-container">
+                <div style="display: flex; align-items: center; justify-content: space-around; height: 100%; padding: 20px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem;">📸</div>
+                        <p>Camera Image</p>
+                    </div>
+                    <div style="font-size: 2rem;">➡️</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem;">🧠</div>
+                        <p>AI Processing</p>
+                    </div>
+                    <div style="font-size: 2rem;">➡️</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem;">📊</div>
+                        <p>21 Landmarks</p>
+                    </div>
+                    <div style="font-size: 2rem;">➡️</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem;">🖱️</div>
+                        <p>Mouse Action</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                🤯 Each frame processes through thousands of mathematical operations in milliseconds!
+            </div>
+        </div>
+
+        <!-- Slide 17: Real-World Applications -->
+        <div class="slide">
+            <h2>🌍 Real-World Impact</h2>
+            
+            <div class="gesture-demo">
+                <div class="gesture-card">
+                    <div class="hand-icon">♿</div>
+                    <h3>Accessibility</h3>
+                    <p>Helping people with motor disabilities interact with computers</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">🏥</div>
+                    <h3>Medical</h3>
+                    <p>Sterile computer control in operating rooms</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">🎬</div>
+                    <h3>Entertainment</h3>
+                    <p>Motion capture for movies and games</p>
+                </div>
+            </div>
+
+            <div class="gesture-demo">
+                <div class="gesture-card">
+                    <div class="hand-icon">🏭</div>
+                    <h3>Industrial</h3>
+                    <p>Controlling machinery without physical contact</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">🎓</div>
+                    <h3>Education</h3>
+                    <p>Interactive learning experiences</p>
+                </div>
+                <div class="gesture-card">
+                    <div class="hand-icon">🚗</div>
+                    <h3>Automotive</h3>
+                    <p>Gesture controls in smart cars</p>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                💫 You've just built technology used by millions of people worldwide!
+            </div>
+
+            <div class="interactive-element" onclick="alert('Your code could be the foundation for the next breakthrough in human-computer interaction! 🌟')">
+                🌟 You're Changing the World!
+            </div>
+        </div>
+
+        <!-- Slide 18: Conclusion -->
+        <div class="slide">
+            <h1>🎉 Congratulations, Future Innovators!</h1>
+            
+            <div class="animation-container">
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column;">
+                    <div class="click-animation" onclick="createFireworks(this)" style="width: 150px; height: 150px; font-size: 3rem;">
+                        🏆
+                    </div>
+                    <h2>You Did It!</h2>
+                </div>
+            </div>
+
+            <div class="math-visual">
+                <h3>🎯 What You've Mastered Today:</h3>
+                <div class="list-item">
+                    <p>✅ <strong>Computer Vision:</strong> Teaching computers to see</p>
+                </div>
+                <div class="list-item">
+                    <p>✅ <strong>Artificial Intelligence:</strong> Using pre-trained models</p>
+                </div>
+                <div class="list-item">
+                    <p>✅ <strong>Euclidean Geometry:</strong> Distances and angles in code</p>
+                </div>
+                <div class="list-item">
+                    <p>✅ <strong>Real-time Processing:</strong> 30+ FPS gesture recognition</p>
+                </div>
+                <div class="list-item">
+                    <p>✅ <strong>Human-Computer Interaction:</strong> Natural user interfaces</p>
+                </div>
+            </div>
+
+            <div class="fun-fact">
+                🌟 From zero knowledge to building AI-powered gesture control in just 60 minutes!
+            </div>
+
+            <div class="interactive-element" onclick="alert('You are now officially a Computer Vision Wizard! 🧙‍♂️✨ Go forth and create amazing things!')">
+                🧙‍♂️ Claim Your Wizard Status!
+            </div>
+
+            <div style="font-size: 1.4rem; margin-top: 30px; color: #667eea; font-style: italic;">
+                "The best way to predict the future is to invent it!" - Alan Kay
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h3>🚀 Your Mission:</h3>
+                <p>Show this to someone at home and watch their amazement!</p>
+                <p>Then dream up the next impossible thing to build...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">⬅️ Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next ➡️</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            // Update progress bar
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update slide counter
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function createClickEffect(element) {
+            element.style.transform = 'scale(0.9)';
+            element.style.boxShadow = '0 0 30px rgba(255, 107, 107, 0.6)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+                element.style.boxShadow = '';
+            }, 200);
+        }
+
+        function createRippleEffect(element) {
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.width = ripple.style.height = '100px';
+            ripple.style.left = ripple.style.top = '50%';
+            ripple.style.marginLeft = ripple.style.marginTop = '-50px';
+            
+            element.appendChild(ripple);
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        function createFireworks(element) {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.textContent = '✨';
+                    firework.style.position = 'absolute';
+                    firework.style.fontSize = '2rem';
+                    firework.style.left = Math.random() * 100 + '%';
+                    firework.style.top = Math.random() * 100 + '%';
+                    firework.style.animation = 'firework 2s ease-out forwards';
+                    element.parentElement.appendChild(firework);
+                    
+                    setTimeout(() => {
+                        firework.remove();
+                    }, 2000);
+                }, i * 200);
+            }
+        }
+
+        function showHandLandmarks() {
+            alert('🖐️ The 21 Hand Landmarks:\n\n0: Wrist\n1-4: Thumb (1=base, 4=tip)\n5-8: Index (5=base, 8=tip)\n9-12: Middle (9=base, 12=tip)\n13-16: Ring (13=base, 16=tip)\n17-20: Pinky (17=base, 20=tip)\n\nLandmark #8 (index tip) is our cursor controller! 👆');
+        }
+
+        function startGestureChallenge() {
+            alert('🎯 GESTURE CHALLENGE!\n\n1. Show cursor movement (point)\n2. Perform left click (index down)\n3. Perform right click (middle down)\n4. Take a screenshot (pinch)\n\nReady? Go! ⏱️');
+        }
+
+        function startMathChallenge() {
+            const challenges = [
+                '📐 If your finger is completely straight, what angle would you expect? (Hint: Think of a line)',
+                '📏 If you pinch your thumb and index finger together, what distance should we expect?',
+                '🤔 What happens to the angle when you slowly bend your finger from straight to completely bent?'
+            ];
+            const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+            alert('🧮 MATH DETECTIVE CHALLENGE!\n\n' + randomChallenge + '\n\nDiscuss with your partner and test your hypothesis!');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // CSS animations for dynamic elements
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes firework {
+                0% {
+                    transform: scale(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(3) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

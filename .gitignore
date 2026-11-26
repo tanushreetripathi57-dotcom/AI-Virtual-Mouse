@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Backups and temporary files
+*.bak
+backups_phase1/
+*.tmp
+*.log
+
+# Generated user screenshots (keep folder, ignore files)
+screenshots/*.png
+!screenshots/.gitkeep
+
+# IDE and environment
+.vscode/
+.idea/
+*.swp
+venv/
+env/
+.env
