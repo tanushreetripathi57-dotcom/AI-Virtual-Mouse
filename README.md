@@ -1,6 +1,16 @@
-# 🖐️ AI Virtual Mouse using Computer Vision
+# AI Virtual Mouse
 
-An advanced, real-time AI-powered Virtual Mouse system built using **OpenCV**, **MediaPipe Hands**, **NumPy**, **PyAutoGUI**, and **pynput**. Control your computer's mouse cursor, click buttons, execute double clicks, and capture screenshots using natural hand gestures through a standard webcam — without touching physical hardware.
+This project turns a webcam into a basic hand-controlled mouse. OpenCV captures the video, MediaPipe detects hand landmarks, and Python translates the gestures into cursor movement and mouse actions.
+
+## Features
+
+- Real-time index-finger cursor control
+- Left click and double-click gestures
+- Right click gesture
+- Screenshot capture with a closed-fist hold
+- Cursor smoothing and reduced pointer jitter
+- On-screen FPS, gesture, pinch, and tracking information
+- Automatic camera fallback across camera indexes 0, 1, and 2
 
 ---
 
@@ -44,23 +54,24 @@ VirtualMouse/
 
 ---
 
-## 🚀 Installation & Quick Start
+## Installation and running
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/NaveenSalve/virtual-mouse.git
-cd virtual-mouse
+Python 3.12 is recommended for this setup. Create a virtual environment in the project folder:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
+Start the application:
+
+```powershell
+.\.venv\Scripts\python.exe main.py
 ```
 
-### 3. Run the Virtual Mouse
-```bash
-python main.py
-```
+Press `q` in the camera window to exit.
 
 ---
 
@@ -86,17 +97,22 @@ python test_virtual_mouse.py
 
 ---
 
-## 🛠️ Technology Stack
+## Technology used
 
-* **Language:** Python 3.10+
-* **Computer Vision:** OpenCV (`cv2`)
-* **ML / Perception:** Google MediaPipe Hands
-* **Math & Geometry:** NumPy
-* **OS Automation:** PyAutoGUI & pynput
+- Python 3.12
+- OpenCV
+- MediaPipe Hands
+- NumPy
+- PyAutoGUI
+- pynput
 
----
+## Troubleshooting
 
-## 👤 Author & Acknowledgments
+- If the webcam preview is black, close other apps using the camera and restart the virtual mouse.
+- Windows camera access must be enabled under **Privacy & security > Camera**.
+- The app uses DirectShow for the webcam on Windows.
+- If `mediapipe` does not provide `mp.solutions.hands`, use Python 3.12 and `mediapipe==0.10.14`.
 
-* **Developer:** [Naveen Salve](https://github.com/NaveenSalve)
-* Developed as an advanced Computer Vision & Human-Computer Interaction (HCI) project.
+## Author
+
+Tanushree Tripathi

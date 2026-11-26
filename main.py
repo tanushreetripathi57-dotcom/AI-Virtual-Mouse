@@ -188,8 +188,8 @@ class VirtualMouseEngine:
             dx = self.cursor_x - self.prev_x
             dy = self.cursor_y - self.prev_y
             if np.hypot(dx, dy) >= config.DEADZONE_PIXELS:
-                px = int(np.clip(self.cursor_x, 0, self.screen_w - 1))
-                py = int(np.clip(self.cursor_y, 0, self.screen_h - 1))
+                px = int(np.clip(self.cursor_x, 1, self.screen_w - 2))
+                py = int(np.clip(self.cursor_y, 1, self.screen_h - 2))
                 pyautogui.moveTo(px, py)
                 self.prev_x = px
                 self.prev_y = py
@@ -289,7 +289,7 @@ def draw_hud(frame, fps, engine, hand_detected):
 def open_camera():
     """Attempts to initialize camera on index 0, falling back to 1 or 2 if unavailable."""
     for idx in [0, 1, 2]:
-        cap = cv2.VideoCapture(idx)
+        cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
         if cap.isOpened():
             # Set preferred resolution
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)

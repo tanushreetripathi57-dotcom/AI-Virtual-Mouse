@@ -18,5 +18,6 @@ screenshots/*.png
 .idea/
 *.swp
 venv/
+.venv/
 env/
 .env
